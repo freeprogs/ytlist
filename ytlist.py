@@ -71,7 +71,10 @@ def parse_block(text):
     doc = lxml.html.fromstring(text)
     url = ('https://www.youtube.com/watch?v='
            + doc.xpath(r'//tr/@data-video-id')[0])
-    time = doc.xpath(r'//div[@class="timestamp"]/span/text()')[0]
+    try:
+        time = doc.xpath(r'//div[@class="timestamp"]/span/text()')[0]
+    except IndexError:
+        time = '0:00'
     title = doc.xpath(r'//tr/@data-title')[0]
     out = (url, time, title)
     return out
