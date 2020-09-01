@@ -1,0 +1,19 @@
+ytlist v1.0.1 - YouTube video list printer.
+
+Load urls and information for videos in a video list on YouTube.
+
+For the YouTube url with video list loads triples (url, time, title) and prints them in format:
+
+url time title\\n
+url time title\\n
+...
+
+Example:
+
+In:
+ytlist https://www.youtube.com/playlist?list=ABCD
+
+Out:
+https://www.youtube.com/watch?v=123 1:01:01 Text of the title1
+https://www.youtube.com/watch?v=456 2:02:02 Text of the title2
+https://www.youtube.com/watch?v=789 3:03:03 Text of the title3
