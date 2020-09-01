@@ -2,7 +2,7 @@
 
 # This file is a part of ytlist v1.0.0
 #
-# Copyright (C) 2017, Slava <freeprogs.feedback@yandex.ru>
+# Copyright (C) 2017-2020, Slava <freeprogs.feedback@yandex.ru>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -38,15 +38,18 @@ https://www.youtube.com/watch?v=789 3:03:03 Text of the title3
 
 """
 
-__version__ = '1.0.0'
-__date__ = '3 June 2018'
+__version__ = '1.0.1'
+__date__ = '1 September 2020'
 __author__ = 'Slava <freeprogs.feedback@yandex.ru>'
 __license__ = 'GNU GPLv3'
 
 import sys
 import argparse
 import urllib.request
+import re
+import json
 import lxml.html
+
 
 def get_charset(data):
     """Get content charset from HTTP response."""
@@ -61,21 +64,37 @@ def load_page(url):
 
 def find_url_blocks(text):
     """Search in text all video blocks with video metadata."""
-    doc = lxml.html.fromstring(text)
-    out = [lxml.html.tostring(i, encoding='unicode')
-           for i in doc.xpath(r'//tr[contains(@class,"pl-video")]')]
+    data_body = text[text.index('window["ytInitialData"]'):
+                     text.index('window["ytInitialPlayerResponse"]')]
+    data_body_clean = re.sub(
+        r'^window\["ytInitialData"\] = (.+);\s*$', r'\1',
+        data_body)
+    data_body_json = json.loads(data_body_clean)
+    video_list = (data_body_json
+                  ['contents']
+                  ['twoColumnBrowseResultsRenderer']
+                  ['tabs']
+                  [0]
+                  ['tabRenderer']
+                  ['content']
+                  ['sectionListRenderer']
+                  ['contents']
+                  [0]
+                  ['itemSectionRenderer']
+                  ['contents']
+                  [0]
+                  ['playlistVideoListRenderer']
+                  ['contents'])
+    out = map(json.dumps, video_list)
     return out
 
 def parse_block(text):
     """Extract url, time and title from text."""
-    doc = lxml.html.fromstring(text)
+    video = json.loads(text)
+    title = video['playlistVideoRenderer']['title']['simpleText']
     url = ('https://www.youtube.com/watch?v='
-           + doc.xpath(r'//tr/@data-video-id')[0])
-    try:
-        time = doc.xpath(r'//div[@class="timestamp"]/span/text()')[0]
-    except IndexError:
-        time = '0:00'
-    title = doc.xpath(r'//tr/@data-title')[0]
+           + video['playlistVideoRenderer']['videoId'])
+    time = video['playlistVideoRenderer']['lengthText']['simpleText']
     out = (url, time, title)
     return out
 
