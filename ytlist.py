@@ -91,7 +91,7 @@ def find_url_blocks(text):
 def parse_block(text):
     """Extract url, time and title from text."""
     video = json.loads(text)
-    title = video['playlistVideoRenderer']['title']['simpleText']
+    title = video['playlistVideoRenderer']['title']['runs'][0]['text']
     url = ('https://www.youtube.com/watch?v='
            + video['playlistVideoRenderer']['videoId'])
     time = video['playlistVideoRenderer']['lengthText']['simpleText']
