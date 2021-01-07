@@ -64,10 +64,10 @@ def load_page(url):
 
 def find_url_blocks(text):
     """Search in text all video blocks with video metadata."""
-    data_body = text[text.index('window["ytInitialData"]'):
-                     text.index('window["ytInitialPlayerResponse"]')]
+    data_body = text[text.index('var ytInitialData ='):
+                     text.index('}}};</script>') + 3]
     data_body_clean = re.sub(
-        r'^window\["ytInitialData"\] = (.+);\s*$', r'\1',
+        r'^var ytInitialData = (.+)$', r'\1',
         data_body)
     data_body_json = json.loads(data_body_clean)
     video_list = (data_body_json
