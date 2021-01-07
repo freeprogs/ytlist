@@ -94,7 +94,10 @@ def parse_block(text):
     title = video['playlistVideoRenderer']['title']['runs'][0]['text']
     url = ('https://www.youtube.com/watch?v='
            + video['playlistVideoRenderer']['videoId'])
-    time = video['playlistVideoRenderer']['lengthText']['simpleText']
+    if 'lengthText' in video['playlistVideoRenderer']:
+        time = video['playlistVideoRenderer']['lengthText']['simpleText']
+    else:
+        time = '00:00'
     out = (url, time, title)
     return out
 
