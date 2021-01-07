@@ -88,6 +88,11 @@ def find_url_blocks(text):
     out = map(json.dumps, video_list)
     return out
 
+def has_restricted_metadata(text):
+    """Search for the restricted video metadata in text."""
+    video = json.loads(text)
+    return 'lengthText' not in video['playlistVideoRenderer']
+
 def parse_block(text):
     """Extract url, time and title from text."""
     video = json.loads(text)
@@ -132,6 +137,10 @@ https://www.youtube.com/watch?v=789 3:03:03 Text of the title3
         description=desc,
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('url', help='url to the videos list')
+    parser.add_argument('--hide-restr',
+                        action='store_true',
+                        dest='hide_restr_videos',
+                        help='hide restricted videos')
     parser.add_argument('--version', '-V',
                         action='version',
                         version='%(prog)s ' + 'v' + __version__)
@@ -149,11 +158,13 @@ def print_error(message):
 def main():
     """Load urls and information for videos in a video list on YouTube."""
     args = get_prog_args()
+    f_hide_restr_videos = args.hide_restr_videos
     url = args.url
     page = load_page(url)
     for block in find_url_blocks(page):
-        parsed_data = parse_block(block)
-        print_data(parsed_data)
+        if not (f_hide_restr_videos and has_restricted_metadata(block)):
+            parsed_data = parse_block(block)
+            print_data(parsed_data)
     return 0
 
 if __name__ == '__main__':
