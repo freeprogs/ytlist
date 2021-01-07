@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-# This file is a part of ytlist v1.0.2
+# This file is a part of ytlist v1.0.3
 #
-# Copyright (C) 2017-2020, Slava <freeprogs.feedback@yandex.ru>
+# Copyright (C) 2017-2021, Slava <freeprogs.feedback@yandex.ru>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -38,8 +38,8 @@ https://www.youtube.com/watch?v=789 3:03:03 Text of the title3
 
 """
 
-__version__ = '1.0.2'
-__date__ = '3 October 2020'
+__version__ = '1.0.3'
+__date__ = '7 January 2021'
 __author__ = 'Slava <freeprogs.feedback@yandex.ru>'
 __license__ = 'GNU GPLv3'
 
